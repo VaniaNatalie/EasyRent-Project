@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState } from "react";
 import SignUpOwnersImg from "../../images/signup_logo_1.svg";
 import FullNameIcon from "@mui/icons-material/PersonOutlineOutlined";
 import EmailIcon from "@mui/icons-material/AlternateEmailOutlined";
@@ -7,7 +7,7 @@ import { Container, Button, CssTextField } from "../../GlobalStyles";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import IconButton from "@mui/material/IconButton";
-import { Fade, InputAdornment } from "@mui/material";
+import { Alert, Fade, InputAdornment } from "@mui/material";
 import LockIcon from "@mui/icons-material/HttpsOutlined";
 import ArrowIcon from "@mui/icons-material/ArrowBackIosOutlined";
 import PhoneIcon from "@mui/icons-material/Phone";
@@ -33,9 +33,10 @@ import {
   RoleHeading,
   CustomToggle,
   Form,
-  ErrorSubheading,
-  MessageSubheading,
 } from "./SignUpOwners.elements";
+
+import { useNavigate } from "react-router-dom";
+import { CLEAR_MESSAGE } from "../../constants/user.constants";
 
 const SignUpOwners = () => {
   const [values, setValues] = useState({
@@ -47,8 +48,10 @@ const SignUpOwners = () => {
     role: "landlord",
     showPassword: false,
   });
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
@@ -67,7 +70,7 @@ const SignUpOwners = () => {
   const landlordSignup = useSelector((state) => state.userRegister);
   const messages = useSelector((state) => state.message);
 
-  const { loading, error } = landlordSignup;
+  const { loading } = landlordSignup;
   const { message } = messages;
 
   const { fullname, username, mobile_phone, email, password, role } = values;
@@ -78,7 +81,21 @@ const SignUpOwners = () => {
 
       dispatch(
         registerLanlord(fullname, username, mobile_phone, email, password, role)
-      );
+      )
+        .then(() => {
+          setSuccessMessage(
+            `Hi ${username}, your sign up is successful. We'll direct you to the login page!~`
+          );
+          setTimeout(() => {
+            setSuccessMessage("");
+            navigate("/login");
+          }, 2000);
+        })
+        .catch(() => {
+          setTimeout(() => {
+            dispatch({ type: CLEAR_MESSAGE });
+          }, 2000);
+        });
     } catch (err) {
       console.log(err);
     }
@@ -102,9 +119,18 @@ const SignUpOwners = () => {
                 <OwnersFormCard>
                   <OwnersHeading>Sign Up</OwnersHeading>
                   <OwnersSubHeading>for Property Owner</OwnersSubHeading>
-                  {error && <ErrorSubheading>{error}</ErrorSubheading>}
-                  {message && <MessageSubheading>{message}</MessageSubheading>}
                   {loading && <Loading />}
+                  {successMessage && (
+                    <>
+                      <Alert severity="success">{successMessage}</Alert>{" "}
+                      <br></br>
+                    </>
+                  )}
+                  {message && (
+                    <>
+                      <Alert severity="error">{message}</Alert> <br></br>
+                    </>
+                  )}
                   <Form onSubmit={handleSubmit}>
                     <CssTextField
                       className="fullname-input"

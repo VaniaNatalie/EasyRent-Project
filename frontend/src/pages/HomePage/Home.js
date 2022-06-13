@@ -15,6 +15,7 @@ import {
   homeObjThree,
   homeObjTenant,
   homeObjLandlord,
+  homeObjAdmin,
   homeObjTenantIntro,
   homeObjLandlordIntro,
 } from "./Data";
@@ -40,6 +41,11 @@ const Home = () => {
               <IntroSection {...homeObjLandlordIntro} />
               <LandlordPost />
               <ContactHomeSection />
+            </>
+          )}
+          {currentUser.user.role === "admin" && (
+            <>
+              <WelcomeSection {...homeObjAdmin} />
             </>
           )}
         </>

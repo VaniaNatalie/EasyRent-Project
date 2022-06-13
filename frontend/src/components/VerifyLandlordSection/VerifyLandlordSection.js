@@ -25,7 +25,7 @@ const VerifyLandlordSection = () => {
     <>
       <Section>
         <Container>
-          {user.user.isVerified === false && (
+          {user?.user.isVerified === false && (
             <>
               <Fade in timeout={2500}>
                 <WelcomeRow>
@@ -49,7 +49,7 @@ const VerifyLandlordSection = () => {
               </Fade>
             </>
           )}
-          {user.user.isVerified === true && (
+          {user?.user.isVerified === true && (
             <>
               <Fade in timeout={2500}>
                 <WelcomeRow>

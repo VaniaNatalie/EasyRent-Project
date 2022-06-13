@@ -117,3 +117,7 @@ export const Section = styled.div`
   padding: 40px 0 0 0;
   color: #000;
 `;
+
+export const WrapButtonCustom = styled.div`
+  padding: 30px 0 20px 70px;
+`;

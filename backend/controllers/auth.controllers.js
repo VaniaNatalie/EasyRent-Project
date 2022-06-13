@@ -9,8 +9,6 @@ const sendEmail = require("../utils/sendEmail");
 const generateToken = require("../utils/generateToken");
 dotenv.config();
 
-const { CLIENT_URL } = process.env;
-
 // Tenant register controller
 const TenantRegister = async (req, res) => {
   const { fullname, username, gender, email, password, role } = req.body;
@@ -126,11 +124,21 @@ const Login = async (req, res) => {
         message: "Invalid password",
       });
     }
-    var token = generateToken(user._id);
+    var token = generateToken(user._id, user.role);
     console.log(token);
     return res.status(201).json({
       message: "User successfully logged in!",
-      user,
+      user: {
+        _id: user._id,
+        role: user.role,
+        isVerified: user.isVerified,
+        email: user.email,
+        fullname: user.fullname,
+        username: user.username,
+        gender: user?.gender,
+        mobile_phone: user?.mobile_phone,
+        favorites: user?.favorites,
+      },
       accessToken: token,
     });
   });
@@ -196,7 +204,7 @@ const reqPasswordReset = async (req, res) => {
       }).save();
     });
 
-    const link = `${CLIENT_URL}/resetPassword/${user._id}/${resetToken}`;
+    const link = `${process.env.CLIENT_URL}/resetPassword/${user._id}/${resetToken}`;
     sendEmail(
       user.email,
       "Password Reset Request",
@@ -275,8 +283,18 @@ const updateProfile = asyncHandler(async (req, res) => {
       const updated = await user.save();
       return res.status(201).json({
         message: "Successfully updated!",
-        user: updated,
-        accessToken: generateToken(user._id),
+        user: {
+          _id: updated._id,
+          role: updated.role,
+          isVerified: updated.isVerified,
+          email: updated.email,
+          fullname: updated.fullname,
+          username: updated.username,
+          gender: updated?.gender,
+          mobile_phone: updated?.mobile_phone,
+          favorites: updated?.favorites,
+        },
+        accessToken: generateToken(user._id, user.role),
       });
     } else {
       return res.status(404).json({ message: "User not found" });
@@ -305,8 +323,18 @@ const changePassword = asyncHandler(async (req, res) => {
             await user.save();
             return res.status(201).json({
               message: "Password successfully changed!",
-              user,
-              accessToken: generateToken(user._id),
+              user: {
+                _id: user._id,
+                role: user.role,
+                isVerified: user.isVerified,
+                email: user.email,
+                fullname: user.fullname,
+                username: user.username,
+                gender: user?.gender,
+                mobile_phone: user?.mobile_phone,
+                favorites: user?.favorites,
+              },
+              accessToken: generateToken(user._id, user.role),
             });
           });
         }

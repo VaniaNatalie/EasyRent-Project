@@ -7,7 +7,8 @@ import {
   CREATE_REVIEW_REQUEST,
   CREATE_REVIEW_SUCCESS,
   CREATE_REVIEW_FAIL,
-  CREATE_REVIEW_RESET,
+  FILTER_BY_GENDER,
+  SEARCH_BY_VALUE,
 } from "../constants/tenant.constants";
 import { SET_MESSAGE } from "../constants/user.constants";
 
@@ -137,7 +138,6 @@ export const createListingReview =
       .then(
         () => {
           dispatch({ type: CREATE_REVIEW_SUCCESS });
-
           return Promise.resolve();
         },
         (err) => {
@@ -157,3 +157,13 @@ export const createListingReview =
         }
       );
   };
+
+export const sortByGender = (payload) => ({
+  type: FILTER_BY_GENDER,
+  payload,
+});
+
+export const filterByValue = (payload) => ({
+  type: SEARCH_BY_VALUE,
+  payload,
+});

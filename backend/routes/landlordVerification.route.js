@@ -5,7 +5,7 @@ const multer = require("multer");
 const {
   storeLandlordVerifiedImages,
 } = require("../controllers/landlordVerification.controllers");
-const { requireSignIn } = require("../middleware/checkAuth");
+const { requireSignIn, ownerAuth } = require("../middleware/checkAuth");
 
 const Storage = multer.diskStorage({
   destination: function (req, file, cb) {

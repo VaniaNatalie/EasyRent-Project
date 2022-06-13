@@ -18,7 +18,7 @@ import {
 export default function ListingCard({ listing }) {
   const dispatch = useDispatch();
 
-  const url = `http://localhost:5000/${listing.housephotos}`;
+  const url = `https://easyrent-node-backend.herokuapp.com/${listing.housephotos}`;
 
   const handleDelete = (id) => {
     dispatch(deleteListing(id));

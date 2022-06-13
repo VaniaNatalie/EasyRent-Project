@@ -1,6 +1,7 @@
 import image from "../../images/mainHomeIcon.svg";
 import tenantImage from "../../images/tenant_home.svg";
 import landlordImage from "../../images/landlord_home.svg";
+import adminImage from "../../images/admin_home_image.svg";
 
 export const homeObjOne = {
   lightBg: false,
@@ -43,6 +44,18 @@ export const homeObjLandlord = {
   buttonLabel: "Start Now",
   btnLabel: "Learn More",
   img: landlordImage,
+  alt: "Lanlord Home Image",
+  imgStart: "",
+};
+
+export const homeObjAdmin = {
+  lightBg: false,
+  start: "",
+  title: "Hello,",
+  titleDetail: "Admin!",
+  description: "Good day and let's monitor your users!",
+  buttonLabel: "Start Now",
+  img: adminImage,
   alt: "Lanlord Home Image",
   imgStart: "",
 };

@@ -39,7 +39,6 @@ export const Button = styled.button`
   text-decoration: none;
   font-size: 16px;
   &:hover {
-    transition: all 0.25 ease-in-out;
     background: transparent;
     border-style: solid;
     border-width: medium;

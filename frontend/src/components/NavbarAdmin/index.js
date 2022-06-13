@@ -9,12 +9,10 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
-import Avatar from "@mui/material/Avatar";
 import Logout from "@mui/icons-material/Logout";
 import AccountIcon from "@mui/icons-material/AccountCircleRounded";
 import HomeIcon from "@mui/icons-material/Home";
 import UsersIcon from "@mui/icons-material/GroupRounded";
-// import { authenticationService } from "../../services/authentication.service";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../actions/auth";
 
@@ -26,7 +24,6 @@ import {
   SidebarCardDetail,
   AccName,
   SidebarIcon,
-  SideLink,
 } from "./NavbarAdmin.elements";
 
 import {
@@ -139,7 +136,7 @@ const NavbarAdmin = () => {
             <>
               <NavMenu>
                 <NavItem>
-                  <NavLink offset={-50} to="/home">
+                  <NavLink offset={-50} to="/">
                     Home
                   </NavLink>
                 </NavItem>
@@ -202,15 +199,6 @@ const NavbarAdmin = () => {
                   anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                 >
                   <MenuItem>
-                    <NavMenuLink to="/account">
-                      <ListItemIcon>
-                        <Avatar fontSize="small" />
-                      </ListItemIcon>
-                      My account
-                    </NavMenuLink>
-                  </MenuItem>
-                  <Divider />
-                  <MenuItem>
                     <NavMenuLink to="/login" onClick={logOut}>
                       <ListItemIcon>
                         <Logout fontSize="medium" />
@@ -243,19 +231,18 @@ const NavbarAdmin = () => {
           </div>
         )}
         <SidebarMenu>
-          <SideLink to="/account">
-            <SidebarAccCard>
-              <SidebarCardDetail>
-                <SidebarIcon>
-                  <AccountIcon sx={{ fontSize: "40px", color: "#2bc66a" }} />
-                </SidebarIcon>
-                <AccName>{user.user.fullname}</AccName>
-              </SidebarCardDetail>
-            </SidebarAccCard>
-          </SideLink>
+          <SidebarAccCard>
+            <SidebarCardDetail>
+              <SidebarIcon>
+                <AccountIcon sx={{ fontSize: "40px", color: "#2bc66a" }} />
+              </SidebarIcon>
+              <AccName>{user.user.fullname}</AccName>
+            </SidebarCardDetail>
+          </SidebarAccCard>
+
           <Divider style={{ width: "90%" }} />
           <SidebarItem>
-            <SidebarLink to="/home" onClick={() => setSidebar(false)}>
+            <SidebarLink to="/" onClick={() => setSidebar(false)}>
               <HomeIcon style={{ color: "black", marginRight: "0.7rem" }} />
               Home
             </SidebarLink>

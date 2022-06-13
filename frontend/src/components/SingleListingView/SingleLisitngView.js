@@ -17,7 +17,6 @@ import {
 import {
   ListingName,
   AddressDetail,
-  SizeDetail,
   DetailSection,
   PriceDetail,
   RentNowBtn,
@@ -47,6 +46,7 @@ import {
   getIndividuals,
   createListingReview,
 } from "../../actions/tenants.actions";
+import { CLEAR_MESSAGE } from "../../constants/user.constants";
 
 const SingleListingView = () => {
   let { id } = useParams();
@@ -70,21 +70,33 @@ const SingleListingView = () => {
   const [star, setStar] = useState(0);
   const [numReview, setNumReview] = useState(0);
   const [reviewsComment, setReviewsComment] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
   const tenants = useSelector((state) => state.tenants);
   const { singleListing } = tenants;
   console.log(singleListing);
 
   const listingReview = useSelector((state) => state.listingReview);
-  const { success, error } = listingReview;
+  const { success } = listingReview;
+
+  const { message } = useSelector((state) => state.message);
 
   useEffect(() => {
     if (success) {
-      alert("Review Submitted!");
+      // alert("Review Submitted!");
+      setSuccessMsg("Review Submitted!~");
+      setTimeout(() => {
+        setSuccessMsg("");
+      }, 2000);
       setRating(0);
       setReviewsComment("");
       dispatch({ type: CREATE_REVIEW_RESET });
+    } else {
+      setTimeout(() => {
+        dispatch({ type: CLEAR_MESSAGE });
+      }, 2000);
     }
+
     dispatch(getIndividuals(id));
   }, [dispatch, success]);
 
@@ -105,8 +117,6 @@ const SingleListingView = () => {
       setNumReview(singleListing.numberOfReviews);
     }
   }, [singleListing]);
-
-  const { message } = useSelector((state) => state.message);
 
   useEffect(() => {
     if (!facilities?.length) {
@@ -145,7 +155,7 @@ const SingleListingView = () => {
             <WelcomeColumn>
               <ImgWrapper>
                 <Img
-                  src={`http://localhost:5000/${housePhoto}`}
+                  src={`https://easyrent-node-backend.herokuapp.com/${housePhoto}`}
                   alt="Property Image"
                 />
               </ImgWrapper>
@@ -171,9 +181,8 @@ const SingleListingView = () => {
                 </div>
                 <Typography>based on {numReview} reviews</Typography>
                 <PriceDetail>{price} /month</PriceDetail>
-
                 <RentNowBtn>
-                  <RentNowLink to="/">Rent now</RentNowLink>
+                  <RentNowLink to={`/checkout/${id}`}>Rent now</RentNowLink>
                 </RentNowBtn>
                 <TextWrapper>
                   <Typography variant="h6">
@@ -220,7 +229,7 @@ const SingleListingView = () => {
         <Container>
           <Heading>Reviews</Heading>
           <Paper style={{ padding: "40px 20px" }}>
-            {success && (
+            {successMsg && (
               <Collapse in={open}>
                 <Alert
                   severity="success"
@@ -241,7 +250,7 @@ const SingleListingView = () => {
                     </IconButton>
                   }
                 >
-                  {success}
+                  {successMsg}
                 </Alert>
               </Collapse>
             )}

@@ -24,6 +24,7 @@ export const tenantsReducer = (state = initialState, action) => {
       return {
         ...state,
         listOfListings: payload,
+        favorites: JSON.parse(localStorage.getItem("favorites")) || [],
       };
     case ADD_FAVORITES:
       return { ...state, favorites: [...(state.favorites || []), payload] };
@@ -38,8 +39,7 @@ export const tenantsReducer = (state = initialState, action) => {
       return payload;
     case RETRIEVE_SINGLE:
       return { singleListing: payload };
-    case FILTER_BY_GENDER:
-      return state;
+
     default:
       return state;
   }

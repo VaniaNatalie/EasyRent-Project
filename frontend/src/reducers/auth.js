@@ -15,7 +15,12 @@ import {
   REFRESH_TOKEN,
 } from "../constants/user.constants";
 
-export const userLoginReducer = (state = {}, action) => {
+const initialState = {
+  loggedIn: false,
+  user: null,
+};
+
+export const userLoginReducer = (state = initialState, action) => {
   switch (action.type) {
     case USER_LOGIN_REQUEST:
       return { loading: true };
@@ -23,6 +28,7 @@ export const userLoginReducer = (state = {}, action) => {
       return {
         loading: false,
         user: action.payload,
+        loggedIn: true,
       };
     case USER_LOGIN_FAIL:
       return {
@@ -30,7 +36,7 @@ export const userLoginReducer = (state = {}, action) => {
         error: action.payload,
       };
     case USER_LOGOUT:
-      return {};
+      return { loggedIn: false, user: null };
     default:
       return state;
   }

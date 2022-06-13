@@ -14,7 +14,7 @@ const PostFavorites = asyncHandler(async (req, res) => {
 
       return res.status(201).json({
         message: "Successfully added",
-        accessToken: generateToken(t._id),
+        accessToken: generateToken(t._id, t.role),
       });
     } else {
       return res.status(404).json({ message: "Listing Not Found!" });
@@ -61,7 +61,7 @@ const DeleteFavorites = async (req, res) => {
 
       return res.status(201).json({
         message: "Successfully deleted",
-        accessToken: generateToken(t._id),
+        accessToken: generateToken(t._id, t.role),
       });
     } else {
       return res.status(404).json({ message: "Listing Not Found!" });
@@ -85,7 +85,7 @@ const RecentlyViewed = async (req, res) => {
       }
       const t = await tenant.save();
       return res.status(201).json({
-        accessToken: generateToken(t._id),
+        accessToken: generateToken(t._id, t.role),
       });
     } else {
       return res.status(404).json({ message: "Listing Not Found!" });

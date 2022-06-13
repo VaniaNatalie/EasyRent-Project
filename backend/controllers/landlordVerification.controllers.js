@@ -15,8 +15,18 @@ const storeLandlordVerifiedImages = asyncHandler(async (req, res) => {
 
       return res.status(201).json({
         message: "Your verification successfully added!",
-        user: updated,
-        accessToken: generateToken(updated._id),
+        user: {
+          _id: updated._id,
+          role: updated.role,
+          isVerified: updated.isVerified,
+          email: updated.email,
+          fullname: updated.fullname,
+          username: updated.username,
+          gender: updated?.gender,
+          mobile_phone: updated?.mobile_phone,
+          favorites: updated?.favorites,
+        },
+        accessToken: generateToken(updated._id, updated.role),
       });
     } else {
       return res.status(404).json({ message: "Error occured!" });

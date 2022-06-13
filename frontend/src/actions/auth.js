@@ -1,4 +1,5 @@
 import axios from "axios";
+import { RETRIEVE_ALL_FAVORITES } from "../constants/tenant.constants";
 import {
   USER_LOGIN_FAIL,
   USER_LOGIN_REQUEST,
@@ -24,10 +25,8 @@ export const registerTenant =
     return authenticationService
       .registerTenant(fullname, username, gender, email, password, role)
       .then(
-        (res) => {
+        () => {
           dispatch({ type: USER_REGISTER_SUCCESS });
-          dispatch({ type: SET_MESSAGE, payload: res.data.message });
-
           return Promise.resolve();
         },
         (err) => {
@@ -35,7 +34,6 @@ export const registerTenant =
             (err.response && err.response.data && err.response.data.message) ||
             err.message ||
             err.toString();
-
           dispatch({
             type: USER_REGISTER_FAIL,
           });
@@ -55,9 +53,8 @@ export const registerLanlord =
     return authenticationService
       .registerLanlord(fullname, username, mobile_phone, email, password, role)
       .then(
-        (res) => {
+        () => {
           dispatch({ type: USER_REGISTER_SUCCESS });
-          dispatch({ type: SET_MESSAGE, payload: res.data.message });
           return Promise.resolve();
         },
         (err) => {
@@ -111,8 +108,18 @@ export const logout = () => (dispatch) => {
   });
 };
 
-export const unauthorized = () => (dispatch) => {
-  authenticationService.unauthorized().then(
+export const unauthorized = () => (dispatch, getState) => {
+  const {
+    userLogin: { user },
+  } = getState();
+
+  const config = {
+    headers: {
+      Authorization: user.accessToken,
+    },
+  };
+
+  return axios.get("/api/privateRoute", config).then(
     () => {
       return Promise.resolve();
     },

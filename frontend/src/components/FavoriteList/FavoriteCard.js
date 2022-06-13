@@ -17,7 +17,7 @@ import { CardCustom } from "../ListingCard/ListingCard.elements";
 export default function FavoriteCard({ tenant }) {
   const dispatch = useDispatch();
 
-  const url = `http://localhost:5000/${tenant.housephotos}`;
+  const url = `https://easyrent-node-backend.herokuapp.com/${tenant.housephotos}`;
 
   return (
     <>

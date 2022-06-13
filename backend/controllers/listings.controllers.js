@@ -156,7 +156,7 @@ const createReview = asyncHandler(async (req, res) => {
     );
 
     if (isReviewed) {
-      res.status(400).json({ message: "Product already reviewed!" });
+      return res.status(400).json({ message: "Product already reviewed!" });
     }
 
     const review = {
@@ -175,7 +175,7 @@ const createReview = asyncHandler(async (req, res) => {
       listing.reviews.length;
 
     await listing.save();
-    res.status(201).json({ message: "Review is added!~" });
+    return res.status(201).json({ message: "Review is added!~" });
   } else {
     return res.status(404).json({ message: "Listing not found!" });
   }

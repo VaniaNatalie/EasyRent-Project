@@ -21,28 +21,26 @@ import {
 } from "../../actions/tenants.actions";
 
 import { CardCustom } from "../ListingCard/ListingCard.elements";
-import axios from "axios";
 
-export default function TenantListingCard({ tenant }) {
+export default function TenantListingCard({ tenant, favorites }) {
   const dispatch = useDispatch();
 
-  const url = `http://localhost:5000/${tenant.housephotos}`;
+  const url = `https://easyrent-node-backend.herokuapp.com/${tenant.housephotos}`;
 
   const tenants = useSelector((state) => state.tenants);
   console.log(tenants);
-
-  const { favorites } = tenants;
-  console.log(favorites);
-
-  const handleSetFavorites = (id) => {
-    dispatch(listingFavorites(id));
-  };
+  // const { favorites } = tenants;
+  // console.log(favorites);
 
   useEffect(() => {
     if (favorites) {
       localStorage.setItem("favorites", JSON.stringify(favorites || []));
     }
   }, [favorites]);
+
+  const handleSetFavorites = (id) => {
+    dispatch(listingFavorites(id));
+  };
 
   const handleDeleteFavorites = (id) => {
     dispatch(deleteFavorites(id));

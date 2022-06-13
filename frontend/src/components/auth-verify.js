@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Outlet, Navigate, useLocation, useNavigate } from "react-router-dom";
+import React from "react";
+import { Outlet, Navigate } from "react-router-dom";
 import { authenticationService } from "../services/authentication.service";
 
 const parseJwt = (token) => {
@@ -12,7 +12,7 @@ const parseJwt = (token) => {
   }
 };
 
-const isExpired = () => {
+export const isExpired = () => {
   const user = JSON.parse(localStorage.getItem("user"));
   if (user) {
     const decodedJWT = parseJwt(user.accessToken);

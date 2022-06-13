@@ -3,11 +3,10 @@ const fs = require("fs");
 const path = require("path");
 const handlebars = require("handlebars");
 
-const { EMAIL_HOST, SERVICE, EMAIL_USERNAME, EMAIL_PASSWORD } = process.env;
-
 const sendEmail = async (email, subject, payload, template) => {
   try {
     const transporter = nodemailer.createTransport({
+      name: process.env.EMAIL_HOST,
       host: process.env.EMAIL_HOST,
       port: 587,
       service: process.env.SERVICE,

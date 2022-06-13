@@ -1,24 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { BrowserRouter as Route, useLocation } from "react-router-dom";
+import React from "react";
 import { Navigate } from "react-router-dom";
-import { unauthorized, logout } from "../actions/auth";
+import { Outlet } from "react-router-dom";
+import { isExpired } from "./auth-verify";
+import { connect } from "react-redux";
 
-export const PrivateRoute = ({ children }) => {
-  const dispatch = useDispatch();
-  const [authenticated, setAuthenticated] = useState(false);
-  const userLogin = useSelector((state) => state.userLogin);
-  const { user } = userLogin;
-
-  dispatch(unauthorized())
-    .then(() => setAuthenticated(true))
-    .catch((err) => {
-      console.log(err);
-      setAuthenticated(false);
-    });
-
-  if (!authenticated) {
-    return <Navigate to={"/login"} replace />;
+const PrivateRoute = ({ loggedIn, redirectPath = "/login", allowedRoles }) => {
+  if (!loggedIn || isExpired()) {
+    return <Navigate to={redirectPath} replace />;
   }
-  return children;
+
+  return <Outlet />;
 };
+
+const mapStateToProps = (state) => {
+  const { loggedIn } = state.userLogin;
+  return {
+    loggedIn,
+  };
+};
+
+export default connect(mapStateToProps)(PrivateRoute);

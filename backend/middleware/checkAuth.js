@@ -75,18 +75,19 @@ ownerAuth = (req, res, next) => {
 };
 
 adminAuth = (req, res, next) => {
-  let token = req.headers["x-access-token"];
+  let token = req.headers["authorization"];
   if (!token) {
     // FORBIDDEN, refuse to authorize
     return res
       .status(403)
       .json({ message: "Not authorized! No token provided! " });
   } else {
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    jwt.verify(token, config.jwtSecretKey, (err, decoded) => {
       if (err) {
         // unauthorized
         return res.status(401).json({ message: "Unauthorized!" });
       } else {
+        console.log(decoded);
         if (decoded.role != "admin") {
           return res.status(403).json({ message: "Require Admin Role" });
         } else {

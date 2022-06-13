@@ -19,7 +19,7 @@ router.get("/", async (req, res, next) => {
 });
 
 router.get("/login", async (req, res, next) => {
-  res.send(config.jwtSecretKey);
+  res.send("login");
 });
 
 router.get("/renter", async (req, res, next) => {

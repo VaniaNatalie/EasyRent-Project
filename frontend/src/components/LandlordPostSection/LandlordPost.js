@@ -40,23 +40,39 @@ class LandlordPost extends Component {
       <>
         <Section>
           <LandlordWrapper>
-            <HeadingWrapper>
-              <LandlordHeading>Your</LandlordHeading>
-              <LandlordSubheading>Posts</LandlordSubheading>
-            </HeadingWrapper>
-            <GridCustom container alignItems="stretch" spacing={3}>
-              {listings.result &&
-                listings.result.slice(0, 3).map((listing, index) => (
-                  <Grid key={index} item xs={12} sm={6} md={4}>
-                    <ListingCard listing={listing} />
-                  </Grid>
-                ))}
-            </GridCustom>
-            <BtnWrapper>
-              <Link to="/your-properties">
-                <Button big>See More</Button>
-              </Link>
-            </BtnWrapper>
+            {listings?.result?.length > 0 ? (
+              <>
+                <HeadingWrapper>
+                  <LandlordHeading>Your</LandlordHeading>
+                  <LandlordSubheading>Posts</LandlordSubheading>
+                </HeadingWrapper>
+                <GridCustom container alignItems="stretch" spacing={3}>
+                  {listings?.result &&
+                    listings?.result.slice(0, 3).map((listing, index) => (
+                      <Grid key={index} item xs={12} sm={6} md={4}>
+                        <ListingCard listing={listing} />
+                      </Grid>
+                    ))}
+                </GridCustom>
+                <BtnWrapper>
+                  <Link to="/your-properties">
+                    <Button big>See More</Button>
+                  </Link>
+                </BtnWrapper>
+              </>
+            ) : (
+              <>
+                <HeadingWrapper>
+                  <LandlordHeading>You haven't post</LandlordHeading>
+                  <LandlordSubheading>anything yet</LandlordSubheading>
+                </HeadingWrapper>
+                <BtnWrapper>
+                  <Link to="/your-properties">
+                    <Button big>Start now</Button>
+                  </Link>
+                </BtnWrapper>
+              </>
+            )}
           </LandlordWrapper>
         </Section>
       </>

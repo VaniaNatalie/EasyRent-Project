@@ -3,7 +3,7 @@ import {
   getIndividualListing,
   updateListing,
 } from "../../actions/post.actions";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   Grid,
   TextField,
@@ -32,11 +32,11 @@ import {
 } from "../SignUpRenters/SignUpRenters.elements";
 import { Section } from "../AddProperty/AddProperty.elements";
 import { useDispatch, useSelector } from "react-redux";
+import { CLEAR_MESSAGE } from "../../constants/user.constants";
 
 const ListingSection = () => {
   let { id } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getIndividualListing(id));
@@ -58,6 +58,10 @@ const ListingSection = () => {
   const [houseCertif, setHouseCertif] = useState("");
   const [facilities, setFacilities] = useState([]);
   const [open, setOpen] = useState(true);
+  const [successMsg, setSuccessMsg] = useState("");
+
+  const { message } = useSelector((state) => state.message);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (singleList) {
@@ -104,13 +108,20 @@ const ListingSection = () => {
     formData.append("housephotos", housePhoto);
     formData.append("housecertif", houseCertif);
 
-    dispatch(updateListing(id, formData)).then(() => {
-      navigate("/your-properties");
-      window.location.reload();
-    });
+    dispatch(updateListing(id, formData))
+      .then(() => {
+        setSuccessMsg("Property successfully updated!~");
+        setTimeout(() => {
+          setSuccessMsg("");
+          navigate("/your-properties");
+        }, 2000);
+      })
+      .catch(() => {
+        setTimeout(() => {
+          dispatch({ type: CLEAR_MESSAGE });
+        }, 2000);
+      });
   };
-
-  const { message } = useSelector((state) => state.message);
 
   return (
     <>
@@ -124,6 +135,31 @@ const ListingSection = () => {
             </RentersColumn>
             <RentersColumn>
               <Card>
+                {successMsg && (
+                  <Collapse in={open}>
+                    <Alert
+                      severity="success"
+                      sx={{
+                        marginTop: "0.2rem",
+                        marginBottom: "0.8rem",
+                      }}
+                      action={
+                        <IconButton
+                          aria-label="close"
+                          color="inherit"
+                          size="small"
+                          onClick={() => {
+                            setOpen(false);
+                          }}
+                        >
+                          <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                      }
+                    >
+                      {successMsg}
+                    </Alert>
+                  </Collapse>
+                )}
                 {message && (
                   <Collapse in={open}>
                     <Alert

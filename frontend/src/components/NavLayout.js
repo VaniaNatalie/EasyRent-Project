@@ -1,5 +1,5 @@
 import Navbar from "./Navbar";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import NavbarOwners from "./NavbarOwners";
 import NavbarRenters from "./NavbarRenters";
 import NavbarAdmin from "./NavbarAdmin";
@@ -12,13 +12,13 @@ import { useSelector } from "react-redux";
 function NavLayout() {
   // const currentUser = authenticationService.getCurrentUser();
   const userLogin = useSelector((state) => state.userLogin);
-  const { user } = userLogin;
+  const { loggedIn, user } = userLogin;
 
   return (
     <div>
       {(() => {
-        if (user) {
-          console.log(user);
+        if (loggedIn) {
+          console.log(loggedIn);
           if (user.user.role === "admin") {
             return <NavbarAdmin />;
           }

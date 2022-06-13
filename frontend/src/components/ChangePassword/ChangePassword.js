@@ -11,6 +11,7 @@ import { Container, Button, CssTextField } from "../../GlobalStyles";
 import LockIcon from "@mui/icons-material/HttpsOutlined";
 import changeImg from "../../images/change_password.svg";
 import ArrowIcon from "@mui/icons-material/ArrowBackIosOutlined";
+import { CLEAR_MESSAGE } from "../../constants/user.constants";
 
 import {
   ChangeSection,
@@ -31,6 +32,7 @@ const ChangePassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [open, setOpen] = useState(true);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const { message } = useSelector((state) => state.message);
 
@@ -49,9 +51,19 @@ const ChangePassword = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(changePassword({ password, confirmPassword })).then(() => {
-      navigate("/account");
-    });
+    dispatch(changePassword({ password, confirmPassword }))
+      .then(() => {
+        setSuccessMessage(`Hi, your password successfully changed!~`);
+        setTimeout(() => {
+          setSuccessMessage("");
+          navigate("/account");
+        }, 2000);
+      })
+      .catch(() => {
+        setTimeout(() => {
+          dispatch({ type: CLEAR_MESSAGE });
+        }, 2000);
+      });
   };
 
   return (
@@ -72,7 +84,7 @@ const ChangePassword = () => {
                 <Fade in timeout={2500}>
                   <ChangeFormCard>
                     <ChangeHeading>Reset your password</ChangeHeading>
-                    {success && (
+                    {successMessage && (
                       <Collapse in={open}>
                         <Alert
                           severity="success"
@@ -93,7 +105,7 @@ const ChangePassword = () => {
                             </IconButton>
                           }
                         >
-                          {success}
+                          {successMessage}
                         </Alert>
                       </Collapse>
                     )}

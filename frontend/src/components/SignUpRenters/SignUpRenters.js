@@ -15,6 +15,8 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../Loading";
 import { registerTenant } from "../../actions/auth";
+import { Alert } from "@mui/material";
+import { CLEAR_MESSAGE } from "../../constants/user.constants";
 
 import {
   RentersSection,
@@ -35,9 +37,8 @@ import {
   RoleInputWrapper,
   RoleHeading,
   Form,
-  ErrorSubheading,
-  MessageSubheading,
 } from "./SignUpRenters.elements";
+import { useNavigate } from "react-router-dom";
 
 const SignUpRenters = () => {
   const [values, setValues] = useState({
@@ -49,7 +50,9 @@ const SignUpRenters = () => {
     role: "tenant",
   });
 
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
@@ -68,7 +71,7 @@ const SignUpRenters = () => {
   const renterSignup = useSelector((state) => state.userRegister);
   const messages = useSelector((state) => state.message);
 
-  const { loading, error } = renterSignup;
+  const { loading } = renterSignup;
   const { message } = messages;
 
   const { fullname, username, gender, email, password, role } = values;
@@ -76,10 +79,23 @@ const SignUpRenters = () => {
   const handleSubmit = (e) => {
     try {
       e.preventDefault();
-
       dispatch(
         registerTenant(fullname, username, gender, email, password, role)
-      );
+      )
+        .then(() => {
+          setSuccessMessage(
+            `Hi ${username}, your sign up is successful. We'll direct you to the login page!~`
+          );
+          setTimeout(() => {
+            setSuccessMessage("");
+            navigate("/login");
+          }, 3000);
+        })
+        .catch(() => {
+          setTimeout(() => {
+            dispatch({ type: CLEAR_MESSAGE });
+          }, 2000);
+        });
     } catch (err) {
       console.log(err);
     }
@@ -103,9 +119,18 @@ const SignUpRenters = () => {
                 <RentersFormCard id="renters-signup-form">
                   <RentersHeading>Sign Up</RentersHeading>
                   <RentersSubHeading>for Rental Searchers</RentersSubHeading>
-                  {error && <ErrorSubheading>{error}</ErrorSubheading>}
-                  {message && <MessageSubheading>{message}</MessageSubheading>}
                   {loading && <Loading />}
+                  {successMessage && (
+                    <>
+                      <Alert severity="success">{successMessage}</Alert>{" "}
+                      <br></br>
+                    </>
+                  )}
+                  {message && (
+                    <>
+                      <Alert severity="error">{message}</Alert> <br></br>
+                    </>
+                  )}
                   <Form onSubmit={handleSubmit}>
                     <CssTextField
                       className="fullname-input"

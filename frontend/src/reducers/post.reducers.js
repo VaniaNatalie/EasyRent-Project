@@ -67,7 +67,7 @@ export const listingsReducer = (state = initialState, action) => {
     case RETRIEVE_LISTING_BY_LANDLORD:
       return payload;
     case UPDATE_LISTING:
-      return state.listing.map((list) => {
+      return (state.listing || []).filter((list) => {
         if (list.id === payload.id) {
           return {
             ...list,

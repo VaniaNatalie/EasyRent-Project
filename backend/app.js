@@ -32,6 +32,6 @@ app.use("/api", authRoutes);
 app.use("/api/listing", listingrouter);
 app.use("/api/landlordVerified", landlordVerification);
 app.use("/api/tenants", tenantRoutes);
-app.use(userRoutes);
+app.use("/api/admin", userRoutes);
 
 module.exports = app;

@@ -7,27 +7,26 @@ import SearchIcon from "@mui/icons-material/Search";
 import { getAllListingsTenants } from "../../actions/tenants.actions";
 import TenantListingCard from "../TenantListingCard/TenantListingCard";
 import { GridCustom } from "../PropertyList/PropertyList.elements";
-import { Section } from "./TenantExploreSection.elements";
+import { Section, Wrap } from "./TenantExploreSection.elements";
 import { Container } from "../../GlobalStyles";
-import { useSelector } from "react-redux";
-import {
-  Grid,
-  FormControl,
-  InputLabel,
-  NativeSelectm,
-  MenuItem,
-  Select,
-} from "@mui/material";
+import { getAllFavorites } from "../../actions/tenants.actions";
+import { Grid, FormControl, MenuItem, Select } from "@mui/material";
 
 class TenantExploreSection extends Component {
   constructor(props) {
     super(props);
     this.onChangeSearchQuery = this.onChangeSearchQuery.bind(this);
     this.searchFilterGender = this.searchFilterGender.bind(this);
+    this.filterByGender = this.filterByGender.bind(this);
+    this.searchFilterRating = this.searchFilterRating.bind(this);
+    this.filterRatingByOrder = this.filterRatingByOrder.bind(this);
+    this.searchFilterRatingOrder = this.searchFilterRatingOrder.bind(this);
+
     this.state = {
       searchQuery: "",
       condition: ["listingName", "city", "address", "ward", "district"],
-      filterGender: ["all"],
+      filterGender: "",
+      filterRatingOrder: "",
     };
   }
 
@@ -49,11 +48,80 @@ class TenantExploreSection extends Component {
     });
   }
 
+  searchFilterRatingOrder(e) {
+    const filterRatingOrder = e.target.value;
+
+    this.setState({
+      filterRatingOrder: filterRatingOrder,
+    });
+  }
+
+  filterByGender(filteredData) {
+    if (!this.state.filterGender) {
+      return filteredData;
+    }
+    const filteredGenderList = filteredData?.filter((listing) => {
+      return listing.gender.split(" ").indexOf(this.state.filterGender) !== -1;
+    });
+    return filteredGenderList;
+  }
+
+  searchFilterRating(e) {
+    const filterRating = e.target.value;
+    this.setState({
+      filterRating: filterRating,
+    });
+  }
+
+  // filterByRating(filteredData) {
+  //   if (!this.state.filterRating) {
+  //     return filteredData;
+  //   }
+  //   const filteredRatingList = filteredData?.filter((listing) => {
+  //     return parseInt(listing.rating) === parseInt(this.state.filterRating);
+  //   });
+  //   return filteredRatingList;
+  // }
+
+  filterRatingByOrder(filteredData) {
+    if (!this.state.filterRatingOrder) {
+      return filteredData;
+    }
+    if (filteredData?.length) {
+      const listingsArray = Object.keys(filteredData).map(
+        (key) => filteredData[key]
+      );
+
+      if (this.state.filterRatingOrder === "asc") {
+        listingsArray.sort((a, b) => {
+          return parseInt(a.rating) - parseInt(b.rating);
+        });
+      }
+      if (this.state.filterRatingOrder === "dsc") {
+        listingsArray.sort((a, b) => {
+          return parseInt(b.rating) - parseInt(a.rating);
+        });
+      }
+
+      return listingsArray;
+    }
+  }
+
   render() {
     const { tenants } = this.props;
-    const { listOfListings } = tenants;
+    console.log(tenants);
+    const { listOfListings, favorites } = tenants;
+    console.log(listOfListings);
 
-    const { searchQuery, condition, filterGender } = this.state;
+    const { searchQuery, condition, filterGender, filterRatingOrder } =
+      this.state;
+
+    console.log(favorites);
+
+    var filteredData = this.filterByGender(listOfListings?.result);
+    filteredData = this.filterRatingByOrder(filteredData);
+
+    console.log(filteredData);
 
     console.log(tenants);
 
@@ -61,14 +129,7 @@ class TenantExploreSection extends Component {
       <>
         <Section>
           <Container>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                flexWrap: "wrap",
-                marginBottom: "20px",
-              }}
-            >
+            <Wrap>
               <Paper
                 component="form"
                 sx={{
@@ -92,18 +153,34 @@ class TenantExploreSection extends Component {
                   <SearchIcon />
                 </IconButton>
               </Paper>
-              <FormControl fullwidth sx={{ marginLeft: "auto " }}>
-                <Select defaultValue="all">
-                  <MenuItem value="all">Filter by Gender</MenuItem>
+              <FormControl fullwidth sx={{ marginLeft: "auto " }} size="small">
+                <Select
+                  displayEmpty
+                  value={filterRatingOrder}
+                  onChange={this.searchFilterRatingOrder}
+                >
+                  <MenuItem value="">Default</MenuItem>
+                  <MenuItem value="asc">Rating - Lowest to Highest</MenuItem>
+                  <MenuItem value="dsc">Rating - Highest to Lowest</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl fullwidth sx={{ marginLeft: "5px" }} size="small">
+                <Select
+                  value={filterGender}
+                  onChange={this.searchFilterGender}
+                  displayEmpty
+                >
+                  <MenuItem value="">All</MenuItem>
                   <MenuItem value="male">Male</MenuItem>
                   <MenuItem value="female">Female</MenuItem>
                 </Select>
               </FormControl>
-            </div>
+            </Wrap>
+
             <GridCustom container alignItems="stretch" spacing={3}>
-              {listOfListings?.result &&
-                listOfListings.result
-                  .filter((item) =>
+              {filteredData &&
+                filteredData
+                  ?.filter((item) =>
                     condition.some((newItem) => {
                       return (
                         item[newItem]
@@ -115,7 +192,10 @@ class TenantExploreSection extends Component {
                   )
                   .map((tenant, index) => (
                     <Grid key={index} item xs={12} sm={6} md={4}>
-                      <TenantListingCard tenant={tenant} />
+                      <TenantListingCard
+                        tenant={tenant}
+                        favorites={favorites}
+                      />
                     </Grid>
                   ))}
             </GridCustom>
@@ -132,6 +212,13 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {
-  getAllListingsTenants,
-})(TenantExploreSection);
+function mapDispatchToProps(dispatch) {
+  return {
+    getAllListingsTenants: () => dispatch(getAllListingsTenants()),
+  };
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TenantExploreSection);

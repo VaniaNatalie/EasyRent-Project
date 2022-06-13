@@ -11,14 +11,11 @@ import {
   DELETE_LISTING,
   RETRIEVE_SINGLE_LISTING,
 } from "../constants/post.constants";
-import { useState } from "react";
 import axios from "axios";
 
-import { SET_MESSAGE, SET_DATA } from "../constants/user.constants";
+import { SET_MESSAGE } from "../constants/user.constants";
 
 import { postService } from "../services/posts.service";
-import { useSelector } from "react-redux";
-import dataReducers from "../reducers/data.reducers";
 
 export const faceMatchLandlord =
   (image1, image2) => async (dispatch, getState) => {
@@ -140,7 +137,7 @@ export const addListing = (details) => async (dispatch, getState) => {
   return await axios.post("/api/listing/addListing", details, config).then(
     (res) => {
       dispatch({ type: ADD_LISTING, payload: res.data });
-      dispatch({ type: SET_MESSAGE, payload: res.data.message });
+
       return Promise.resolve(res.data);
     },
     (err) => {
@@ -221,13 +218,21 @@ export const updateListing = (id, list) => async (dispatch, getState) => {
 
   return await axios
     .put(`/api/listing/${id}`, list, config)
-    .then((data) => {
-      console.log(data);
-      dispatch({ type: UPDATE_LISTING, payload: data });
-      dispatch({ type: SET_MESSAGE, payload: data.message });
+    .then((res) => {
+      console.log(res.data.message);
+      dispatch({ type: UPDATE_LISTING, payload: res.data });
+
       return Promise.resolve();
     })
     .catch((err) => {
+      const message =
+        (err.response && err.response.data && err.response.data.message) ||
+        err.message ||
+        err.toString();
+      dispatch({
+        type: SET_MESSAGE,
+        payload: message,
+      });
       console.log(err);
       return Promise.reject();
     });

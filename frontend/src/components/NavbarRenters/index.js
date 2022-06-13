@@ -18,7 +18,6 @@ import ExploreIcon from "@mui/icons-material/Explore";
 import HomeIcon from "@mui/icons-material/Home";
 import InfoIcon from "@mui/icons-material/Info";
 import CallIcon from "@mui/icons-material/Call";
-// import { authenticationService } from "../../services/authentication.service";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../actions/auth";
 
@@ -309,6 +308,12 @@ const NavbarRenters = () => {
             <SidebarLink to="/contactus" onClick={() => setSidebar(false)}>
               <CallIcon style={{ color: "black", marginRight: "0.7rem" }} />
               Contact Us
+            </SidebarLink>
+          </SidebarItem>
+          <SidebarItem>
+            <SidebarLink to="/favorites" onClick={() => setSidebar(false)}>
+              <StarIcon style={{ color: "black", marginRight: "0.7rem" }} />
+              Favorites
             </SidebarLink>
           </SidebarItem>
           <SideMenu>
